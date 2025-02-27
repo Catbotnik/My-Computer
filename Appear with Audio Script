@@ -1,0 +1,26 @@
+'use strict';
+
+let frequencyResolution = 16; // Must be 16, 32, or 64 per channel
+
+/**
+ * This creates a permanent link to the audio response data.
+ */
+let audioBuffer = engine.registerAudioBuffers(frequencyResolution);
+const MIN_AUDIO_LEVEL = 0.5;
+
+/**
+ * @param {AudioPlaybackEvent} event
+ */
+export function mediaPlaybackChanged(event) {
+    let soundPlaying = false;
+    
+    // Check the average frequency volume to determine if sound is playing
+    audioBuffer.average.forEach(function(frequencyVolume) {
+        if (frequencyVolume > MIN_AUDIO_LEVEL) {
+            soundPlaying = true;
+        }
+    });
+
+    // Set the layer visibility based on the sound state
+    thisLayer.visible = soundPlaying;
+}
