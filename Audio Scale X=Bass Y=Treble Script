@@ -1,0 +1,43 @@
+'use strict';
+
+// Please note: Do not remove this line or asset references may break.
+export let __workshopId = '2176179867';
+
+let defaultScale = { x: 1, y: 1, z: 1 }; // Set default scale to 1
+
+let frequencyResolution = 16; // Must be 16, 32 or 64 per channel.
+
+/**
+ * This creates a permanent link to the audio response data.
+ */
+let audioBuffer = engine.registerAudioBuffers(frequencyResolution);
+const MIN_AUDIO_LEVEL = 1.3;
+const MAX_AUDIO_LEVEL = 1.5;
+
+/**
+ * @param {Vec3} value - for property 'scale'
+ * @return {Vec3} - update current property value
+ */
+export function update(value) {
+    let frequencyVolumes = [];
+    let soundPlaying = false;
+    
+    audioBuffer.average.forEach(function(frequencyVolume, index) {
+        // Go through all frequencies and make sure they are between MIN_AUDIO_LEVEL and MAX_AUDIO_LEVEL
+        frequencyVolumes[index] = Math.min(Math.max(frequencyVolume, MIN_AUDIO_LEVEL), MAX_AUDIO_LEVEL);
+        if (frequencyVolumes[index] > MIN_AUDIO_LEVEL) {
+            soundPlaying = true;
+        }
+    });
+
+    if (soundPlaying) {
+        value.x = frequencyVolumes[0]; // Assign bass to X value of Vector return value
+        value.y = frequencyVolumes[15]; // Assign treble to Y value of Vector return value
+    } else {
+        value.x = defaultScale.x;
+        value.y = defaultScale.y;
+        value.z = defaultScale.z;
+    }
+
+    return value;
+}
