@@ -2,6 +2,10 @@ Appear with Music Script is bound to the image layer
 
 Audio Scale X=Bass Y=Treble Script is bound to the scale axis
 
+////
+
+I'll update the code if i ever make a better version of it
+
 
 
 
